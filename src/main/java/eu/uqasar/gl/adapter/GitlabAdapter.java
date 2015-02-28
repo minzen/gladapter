@@ -4,6 +4,10 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gitlab.api.GitlabAPI;
+import org.gitlab.api.models.GitlabProject;
+import org.gitlab.api.models.GitlabSession;
+
 import eu.uqasar.adapter.SystemAdapter;
 import eu.uqasar.adapter.exception.uQasarException;
 import eu.uqasar.adapter.model.BindedSystem;
@@ -24,9 +28,19 @@ public class GitlabAdapter implements SystemAdapter {
 
         try {
 
+        	String url = boundSystem.getUri();
             // Connection to GitLab instance
             uri = new URI(boundSystem.getUri());
-						
+            
+            
+            GitlabSession session = GitlabAPI.connect(url, user.getUsername(), user.getPassword());
+            String privateToken = session.getPrivateToken();
+            System.out.println("PrivateToken: " +privateToken);
+            GitlabAPI api = GitlabAPI.connect(url, privateToken);
+            List<GitlabProject> projects = api.getAllProjects();
+            for (GitlabProject gitlabProject : projects) {
+				System.out.println(gitlabProject.getName());
+			}
         } catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,13 +63,10 @@ public class GitlabAdapter implements SystemAdapter {
         user.setUsername(creds[0]);
         user.setPassword(creds[1]);
 
-        // TBD
-
         GitlabQueryExpression gitlabQueryExpression = new GitlabQueryExpression(queryExpression);
-
         GitlabAdapter gitlabAdapter = new GitlabAdapter();
-
-        measurements = gitlabAdapter.query(boundSystem,user,gitlabQueryExpression);
+        // Get the measurements
+        measurements = gitlabAdapter.query(boundSystem, user, gitlabQueryExpression);
 
         return measurements;
     }
@@ -69,4 +80,34 @@ public class GitlabAdapter implements SystemAdapter {
 
         }
     }
+
+	//in order to invoke main from outside jar
+	//mvn exec:java -Dexec.mainClass="eu.uqasar.gitlab.adapter.GitlabAdapter" -Dexec.args="https://gitlab.com user:pass"
+
+	
+	public static void main(String[] args) {
+		
+		
+	    List<Measurement> measurements;
+	    BindedSystem boundSystem = new BindedSystem();
+	    boundSystem.setUri(args[0]);
+	
+	    // User
+	    User user = new User();
+	    
+	    String[] credentials = args[1].split(":");
+	    user.setUsername(credentials[0]);
+	    user.setPassword(credentials[1]);
+	
+	    
+	    try {
+	    	GitlabAdapter gitlabAdapter = new GitlabAdapter();
+	    	GitlabQueryExpression gitlabQueryExpression = new GitlabQueryExpression(args[2]);    	
+	        measurements = gitlabAdapter.query(boundSystem, user, gitlabQueryExpression);
+	        gitlabAdapter.printMeasurements(measurements);
+	        
+	    } catch (uQasarException e) {
+	        e.printStackTrace();
+	    }    
+	}
 }

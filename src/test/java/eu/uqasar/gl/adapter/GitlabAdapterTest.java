@@ -13,13 +13,14 @@ public class GitlabAdapterTest {
 
 	GitlabAdapter gitlabAdapter = new GitlabAdapter();
     String newLine = System.getProperty("line.separator");
-    String boundSystemURL = "http://www.gitlab.com/";
-    String credentials = "user:passwd";
-    String queryExpression = "XXX"; //TODO: Fix this
+    String boundSystemURL = "https://gitlab.com";
+    String credentials = "user:pass";
+    String queryExpression = "";
 
     
     @Test
-    public void testGetProjects() {
+    public void testGetCommits() {
+    	queryExpression = "GIT_COMMITS";
     	try {
 			gitlabAdapter.query(boundSystemURL, credentials, queryExpression);
 		} catch (uQasarException e) {

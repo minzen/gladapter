@@ -9,3 +9,4 @@ log/
 .classpath
 .project
 .settings/
+/bin/

@@ -63,7 +63,7 @@
                 </execution>
             </executions>
             <configuration>
-                <mainClass>eu.uqasar.jira.adapter.JiraAdapter</mainClass>
+                <mainClass>eu.uqasar.gl.adapter.GitlabAdapter</mainClass>
             </configuration>
         </plugin>
         <plugin>
@@ -71,7 +71,7 @@
             <configuration>
                 <archive>
                     <manifest>
-                        <mainClass>eu.uqasar.jira.adapter.JiraAdapter</mainClass>
+                        <mainClass>eu.uqasar.gl.adapter.GitlabAdapter</mainClass>
                     </manifest>
                 </archive>
                 <descriptorRefs>

@@ -1,8 +1,12 @@
 package eu.uqasar.gl.adapter;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import eu.uqasar.adapter.exception.uQasarException;
+import eu.uqasar.adapter.model.Measurement;
 
 /**
  * 
@@ -22,9 +26,25 @@ public class GitlabAdapterTest {
     public void testGetCommits() {
     	queryExpression = "GIT_COMMITS";
     	try {
-			gitlabAdapter.query(boundSystemURL, credentials, queryExpression);
+			List<Measurement> measurements = gitlabAdapter.query(boundSystemURL, credentials, queryExpression);
+			Assert.assertNotNull(measurements);
+			gitlabAdapter.printMeasurements(measurements);
 		} catch (uQasarException e) {
 			e.printStackTrace();
 		}
     }
+    
+    @Test
+    public void testGetProjects() {
+    	queryExpression = "GIT_PROJECTS";
+    	try {
+			List<Measurement> measurements = gitlabAdapter.query(boundSystemURL, credentials, queryExpression);
+			Assert.assertNotNull(measurements);
+			gitlabAdapter.printMeasurements(measurements);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}    	
+    }
+    
+    
 }

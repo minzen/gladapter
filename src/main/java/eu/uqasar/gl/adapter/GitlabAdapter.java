@@ -2,6 +2,8 @@ package eu.uqasar.gl.adapter;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabCommit;
@@ -18,9 +20,12 @@ import eu.uqasar.adapter.query.QueryExpression;
 
 public class GitlabAdapter implements SystemAdapter {
 
-
+	private final static Logger LOGGER = 
+			Logger.getLogger(GitlabAdapter.class.getName()); 
+	
 	// Constructor
     public GitlabAdapter() {
+    	LOGGER.setLevel(Level.INFO);
     }
 
     @Override
@@ -42,7 +47,7 @@ public class GitlabAdapter implements SystemAdapter {
             // Obtain a private token from the session by authenticating
             String privateToken = session.getPrivateToken();
             
-            System.out.println("PrivateToken: " +privateToken);
+            LOGGER.info("PrivateToken: " +privateToken);
             
             // Connect to GitlabAPI
             GitlabAPI api = GitlabAPI.connect(url, privateToken);
@@ -50,35 +55,53 @@ public class GitlabAdapter implements SystemAdapter {
             String query = queryExpression.getQuery();
             
             if (query.equalsIgnoreCase(uQasarMetric.GIT_COMMITS.name())){
-            	System.out.println("COMMITS...");
+            	LOGGER.info("COMMITS...");
             	List<GitlabProject> projects = api.getProjects();
             	Integer commitsCount = null;
                 for (GitlabProject gitlabProject : projects) {
-    				System.out.println("Project: " +gitlabProject.getName());
-    				List<GitlabCommit> listOfCommits = api.getAllCommits(gitlabProject.getId());
+                	LOGGER.info("Project: " +gitlabProject.getName());
+    				List<GitlabCommit> listOfCommits = 
+    						api.getAllCommits(gitlabProject.getId());
     				commitsCount = listOfCommits.size();
     				String commitsCountStr = Integer.toString(commitsCount);
     				
     	            for (GitlabCommit commit : listOfCommits) {
-    	            	System.out.println("[id: "+commit.getId() 
+    	            	LOGGER.info("[ id: "+commit.getId() 
     	            			+", author: " +commit.getAuthorName() 
     	            			+", title: " +commit.getTitle()
     	            			+", created: " +commit.getCreatedAt()
-    	            			+"]");
+    	            			+" ]");
     				}				
 
-    	            System.out.println("Commits: " +commitsCount);
+    	            LOGGER.info("Number of commits: " +commitsCount);
     	            measurements.add(new Measurement(uQasarMetric.GIT_COMMITS, 
     	            		commitsCountStr));            	
                 }
+            } 
+            
+            if (query.equalsIgnoreCase(uQasarMetric.GIT_PROJECTS.name())) {
+            	LOGGER.info("PROJECTS...");
+            	List<GitlabProject> projects = api.getProjects();
+            	Integer projectsCount = projects.size();
+            	LOGGER.info("Number of projects: " +projectsCount);
+            	String projectsCountStr = Integer.toString(projectsCount);
+            	
+            	for (GitlabProject gitlabProject : projects) {
+					LOGGER.info("[ id: " +gitlabProject.getId() +", "
+							+ "name: " +gitlabProject.getName() +", "
+							+ "ssh-url: " +gitlabProject.getSshUrl()
+							+" ]");
+				}
+            	measurements.add(new Measurement(uQasarMetric.GIT_PROJECTS, 
+            			projectsCountStr));
             }
+            
+            return measurements;
+            
         }   catch (Exception e) {
 			e.printStackTrace();
+			return measurements;
 		}
-
-        return measurements;
-
-
     }
 
     @Override

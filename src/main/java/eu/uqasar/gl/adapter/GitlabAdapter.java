@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONObject;
 import org.gitlab.api.GitlabAPI;
 import org.gitlab.api.models.GitlabCommit;
 import org.gitlab.api.models.GitlabProject;
@@ -53,7 +55,8 @@ public class GitlabAdapter implements SystemAdapter {
             GitlabAPI api = GitlabAPI.connect(url, privateToken);
             
             String query = queryExpression.getQuery();
-            
+            JSONArray measurementResultJSONArray = new JSONArray();
+
             if (query.equalsIgnoreCase(uQasarMetric.GIT_COMMITS.name())){
             	LOGGER.info("COMMITS...");
             	List<GitlabProject> projects = api.getProjects();
@@ -63,20 +66,29 @@ public class GitlabAdapter implements SystemAdapter {
     				List<GitlabCommit> listOfCommits = 
     						api.getAllCommits(gitlabProject.getId());
     				commitsCount = listOfCommits.size();
-    				String commitsCountStr = Integer.toString(commitsCount);
+    	            LOGGER.info("Number of commits: " +commitsCount);
     				
     	            for (GitlabCommit commit : listOfCommits) {
-    	            	LOGGER.info("[ id: "+commit.getId() 
-    	            			+", author: " +commit.getAuthorName() 
+
+    	            	JSONObject jObj = new JSONObject();
+    	            	jObj.put("id", commit.getId());
+    	            	jObj.put("shortId", commit.getShortId());
+    	            	jObj.put("createdAt", commit.getCreatedAt());
+    	            	jObj.put("title", commit.getTitle());
+    	            	jObj.put("authorName", commit.getAuthorName());
+    	            	jObj.put("authorEmail", commit.getAuthorEmail());
+    	            	measurementResultJSONArray.put(jObj);
+
+    					LOGGER.info("[ id: "+commit.getId() 
+    							+", shortId: " +commit.getShortId()
+    	            			+", createdAt: " +commit.getCreatedAt()
     	            			+", title: " +commit.getTitle()
-    	            			+", created: " +commit.getCreatedAt()
+    	            			+", authorName: " +commit.getAuthorName()
+    	            			+", authorEmail: " +commit.getAuthorEmail()
     	            			+" ]");
     				}				
-
-    	            LOGGER.info("Number of commits: " +commitsCount);
-    	            measurements.add(new Measurement(uQasarMetric.GIT_COMMITS, 
-    	            		commitsCountStr));            	
                 }
+                measurements.add(new Measurement(uQasarMetric.GIT_COMMITS, measurementResultJSONArray.toString()));
             } 
             
             if (query.equalsIgnoreCase(uQasarMetric.GIT_PROJECTS.name())) {
@@ -84,16 +96,49 @@ public class GitlabAdapter implements SystemAdapter {
             	List<GitlabProject> projects = api.getProjects();
             	Integer projectsCount = projects.size();
             	LOGGER.info("Number of projects: " +projectsCount);
-            	String projectsCountStr = Integer.toString(projectsCount);
-            	
+
             	for (GitlabProject gitlabProject : projects) {
-					LOGGER.info("[ id: " +gitlabProject.getId() +", "
-							+ "name: " +gitlabProject.getName() +", "
-							+ "ssh-url: " +gitlabProject.getSshUrl()
+            		
+            		JSONObject jObj = new JSONObject();
+            		jObj.put("id", gitlabProject.getId());
+            		jObj.put("createdAt", gitlabProject.getCreatedAt());
+            		jObj.put("defaultBranch", gitlabProject.getDefaultBranch());
+            		jObj.put("description", gitlabProject.getDescription());
+            		jObj.put("httpUrl", gitlabProject.getHttpUrl());
+            		jObj.put("lastActivityAt", gitlabProject.getLastActivityAt());
+            		jObj.put("name", gitlabProject.getName());
+            		jObj.put("nameSpace", gitlabProject.getNamespace());
+            		jObj.put("nameWithNamespace", gitlabProject.getNameWithNamespace());
+            		jObj.put("owner", gitlabProject.getOwner());
+            		jObj.put("path", gitlabProject.getPath());
+            		jObj.put("pathWithNamespace", gitlabProject.getPathWithNamespace());
+            		jObj.put("permissions", gitlabProject.getPermissions());
+            		jObj.put("sshUrl", gitlabProject.getSshUrl());
+            		jObj.put("visibilityLevel", gitlabProject.getVisibilityLevel());
+            		jObj.put("webUrl", gitlabProject.getWebUrl());
+            		// Add to JSON array
+            		measurementResultJSONArray.put(jObj);
+            		
+					LOGGER.info("[ id: " +gitlabProject.getId() 
+							+", createdAt: " +gitlabProject.getCreatedAt()
+		            		+", defaultBranch: " +gitlabProject.getDefaultBranch()
+		            		+", description: " +gitlabProject.getDescription()
+		            		+", httpUrl: " +gitlabProject.getHttpUrl()
+		            		+", lastActivityAt: " +gitlabProject.getLastActivityAt()
+		            		+",name: " +gitlabProject.getName()
+		            		+", nameSpace: " +gitlabProject.getNamespace()
+		            		+", nameWithNamespace: " +gitlabProject.getNameWithNamespace()
+		            		+", owner: " +gitlabProject.getOwner()
+		            		+", path: " +gitlabProject.getPath()
+		            		+", pathWithNamespace: " +gitlabProject.getPathWithNamespace()
+		            		+", permissions: " +gitlabProject.getPermissions()
+		            		+", sshUrl: " +gitlabProject.getSshUrl()
+		            		+", visibilityLevel: " +gitlabProject.getVisibilityLevel()
+		            		+", webUrl: " +gitlabProject.getWebUrl()
 							+" ]");
 				}
             	measurements.add(new Measurement(uQasarMetric.GIT_PROJECTS, 
-            			projectsCountStr));
+            			measurementResultJSONArray.toString()));
             }
             
             return measurements;

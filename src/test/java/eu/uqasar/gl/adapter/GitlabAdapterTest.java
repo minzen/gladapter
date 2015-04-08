@@ -3,6 +3,7 @@ package eu.uqasar.gl.adapter;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import eu.uqasar.adapter.exception.uQasarException;
@@ -15,12 +16,19 @@ import eu.uqasar.adapter.model.Measurement;
  */
 public class GitlabAdapterTest {
 
-	GitlabAdapter gitlabAdapter = new GitlabAdapter();
-    String newLine = System.getProperty("line.separator");
-    String boundSystemURL = "https://gitlab.com";
-    String credentials = "user:pass";
-    String queryExpression = "";
+	private GitlabAdapter gitlabAdapter;
+    private String boundSystemURL;
+    private String credentials;
+    private String queryExpression;
 
+    
+    @Before
+    public void setUp() {
+    	gitlabAdapter = new GitlabAdapter();
+    	boundSystemURL = "https://gitlab.com";
+    	credentials = "user:pass";
+    }
+    
     
     @Test
     public void testGetCommits() {

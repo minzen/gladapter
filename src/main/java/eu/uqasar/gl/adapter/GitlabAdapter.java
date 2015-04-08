@@ -185,11 +185,9 @@ public class GitlabAdapter implements SystemAdapter {
         }
     }
 
-	//in order to invoke main from outside jar
-	//mvn exec:java -Dexec.mainClass="eu.uqasar.gitlab.adapter.GitlabAdapter" 
-    //-Dexec.args="https://gitlab.com user:pass"
-
-	
+    // Execute on command line: 
+    // $ java -jar target\GitLabAdapter-1.0-jar https://gitlab.com user:pass QUERY
+    // QUERY is e.g. GIT_PROJECTS or GIT_COMMITS
 	public static void main(String[] args) {
 		
 		

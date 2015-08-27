@@ -1,4 +1,4 @@
-package eu.uqasar.gl.adapter;
+package eu.uqasar.gitlab.adapter;
 
 import java.util.LinkedList;
 import java.util.List;

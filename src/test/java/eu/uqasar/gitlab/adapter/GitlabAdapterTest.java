@@ -1,4 +1,4 @@
-package eu.uqasar.gl.adapter;
+package eu.uqasar.gitlab.adapter;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import eu.uqasar.adapter.exception.uQasarException;
 import eu.uqasar.adapter.model.Measurement;
+import eu.uqasar.gitlab.adapter.GitlabAdapter;
 
 /**
  * 

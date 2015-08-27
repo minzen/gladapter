@@ -2,15 +2,43 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>GitLabAdapter</groupId>
-	<artifactId>GitLabAdapter</artifactId>
-	<version>1.0</version>
+	<groupId>eu.uqasar.gitlab.adapter.GitlabAdapter</groupId>
+	<artifactId>GitlabAdapter</artifactId>
+	<version>1.0.1</version>
 	<name>GitlabAdapter</name>
+
+	<repositories>
+		<!-- ATB Maven Repository -->
+		<repository>
+			<id>atb-ext-releases</id>
+			<name>ATB Maven Public RELEASES Repository</name>
+			<url>http://www.atb-bremen.de/artifactory/ext-releases-local/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>atb-ext-snapshots</id>
+			<name>ATB Maven Public SNAPSHOT Repository</name>
+			<url>http://www.atb-bremen.de/artifactory/ext-snapshots-local/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>eu.uqasar.adapter.uQasarAdapter</groupId>
 			<artifactId>uQasarAdapter</artifactId>
-			<version>2.0.3</version>
+			<version>2.0.4</version>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -24,7 +52,6 @@
 			<artifactId>java-gitlab-api</artifactId>
 			<version>1.1.7</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -34,7 +61,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>eu.uqasar.gl.adapter.GitlabAdapter</mainClass>
+							<mainClass>eu.uqasar.gitlab.adapter.GitlabAdapter</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.uqasar.gitlab.adapter.GitlabAdapter</groupId>
 	<artifactId>GitlabAdapter</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>GitlabAdapter</name>
 
 	<repositories>
@@ -45,12 +45,14 @@
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
 			<version>1.1</version>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>org.gitlab</groupId>
 			<artifactId>java-gitlab-api</artifactId>
-			<version>1.1.7</version>
+			<version>1.1.9</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 
